@@ -17,6 +17,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  task: {
+    borderColor: "#000000",
+    width: "40%",
+    borderWidth: 2,
+    borderRadius: 20,
+    padding: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  description: {
+    borderColor: "#000000",
+    width: "70%",
+    borderWidth: 2,
+    borderRadius: 30,
+    padding: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 const TaskCalendar = () => {
@@ -65,8 +84,19 @@ const TaskCalendar = () => {
           animationType="slide">
             <View style= {styles.container}>
               <Text> {selectedDate}</Text>
+                <View style= {styles.task}>
+                  <TextInput 
+                    placeholder = "Task"
+                  />
+                </View>
+                <View style= {styles.description}>
+                  <TextInput 
+                    placeholder = "Description"
+                  />
+                </View>
             </View>
-          <Button title="Done" onPress={hideModal} />
+          <Button title="Done" onPress={hideModal} 
+        />
         </Modal>
       </View>
       );
