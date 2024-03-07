@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     padding: 50,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 20,
   },
 });
 
@@ -45,14 +46,24 @@ const TaskCalendar = () => {
     const [taskTitle, setTaskTitle] = useState('');
     const [taskDescription, setTaskDescription] = useState('');
 
-    const addTask = (date) => {
-      const newTask = {
-        id: date,
-        title: taskTitle,
-        description: taskDescription,
+    const addTask = () => {
+      const newTasks = {
+        ...tasks,
+        [selectedDate]: [
+          ...(tasks[selectedDate] || []),
+          {
+            id: selectedDate, 
+            title: taskTitle,
+            description: taskDescription,
+          },
+        ],
       }
-    };
-
+      setTasks(newTasks)
+      setTaskTitle('')
+      setTaskDescription('')
+      hideModal()
+      console.log(tasks)
+    }
     const today = new Date()
     const startDate = getFormatedDate(today.setDate(today.getDate() + 1), 'YYYY/MM/DD')
 
@@ -87,13 +98,18 @@ const TaskCalendar = () => {
                 <View style= {styles.task}>
                   <TextInput 
                     placeholder = "Task"
+                    value={taskTitle}
+                    onChangeText={setTaskTitle}
                   />
                 </View>
                 <View style= {styles.description}>
                   <TextInput 
                     placeholder = "Description"
+                    value={taskDescription}
+                    onChangeText={setTaskDescription}
                   />
                 </View>
+                <Button title="Submit" onPress={addTask}/>
             </View>
           <Button title="Done" onPress={hideModal} 
         />
