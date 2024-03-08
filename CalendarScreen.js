@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, Modal, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button, Modal, TextInput, ScrollView } from 'react-native';
 import DatePicker from 'react-native-modern-datepicker';
 import { getFormatedDate } from 'react-native-modern-datepicker';
 import React, { useState } from 'react';
@@ -37,6 +37,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 20,
   },
+  taskContainer: {
+    backgroundColor: '#fff', 
+    borderRadius: 10, 
+    padding: 10, 
+    marginVertical: 5, 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    shadowColor: "#000", 
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5, 
+  },
 });
 
 const TaskCalendar = () => {
@@ -65,13 +81,14 @@ const TaskCalendar = () => {
       console.log(tasks)
     }
     const today = new Date()
-    const startDate = getFormatedDate(today.setDate(today.getDate() + 1), 'YYYY/MM/DD')
+    const startDate = getFormatedDate(today.setDate(today.getDate()), 'YYYY/MM/DD')
 
     const showModal = () => setVisible(true)
     const hideModal = () => setVisible(false)
 
     return (
       <View>
+        <ScrollView>
         <DatePicker
           options={{
             backgroundColor: '#FFFFFF',
@@ -114,6 +131,19 @@ const TaskCalendar = () => {
           <Button title="Done" onPress={hideModal} 
         />
         </Modal>
+        <View>
+        {tasks[selectedDate] ? (
+          tasks[selectedDate].map((task, index) => (
+            <View key={index} style={styles.taskContainer}>
+              <Text> {task.title} </Text>
+              <Text> {task.description} </Text>
+            </View>
+          ))
+        ) : (
+          <Text>No tasks for this date.</Text>
+        )}
+        </View>
+        </ScrollView>
       </View>
       );
   };
