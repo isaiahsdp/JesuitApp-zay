@@ -5,7 +5,6 @@ import React from 'react';
 export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Greeting name="World" />
       <StatusBar style="auto" />
       <Button 
         title="Calendar" 

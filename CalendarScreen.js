@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, Modal, TextInput, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Button, Modal, TextInput, ScrollView, TouchableOpacity } from 'react-native';
 import DatePicker from 'react-native-modern-datepicker';
 import { getFormatedDate } from 'react-native-modern-datepicker';
 import React, { useState } from 'react';
@@ -38,12 +38,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   taskContainer: {
+    flexDirection: 'row',
     backgroundColor: '#fff', 
     borderRadius: 10, 
     padding: 10, 
     marginVertical: 5, 
     alignItems: 'center', 
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     shadowColor: "#000", 
     shadowOffset: {
       width: 0,
@@ -53,13 +54,29 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5, 
   },
+  taskInput: {
+    fontWeight: 'bold', 
+    textAlign: 'left', 
+    fontSize: 20,
+  },
+  circleButton: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#000',
+    backgroundColor: '#fff', 
+  },
+  circleButtonPressed: {
+    backgroundColor: '#F4722B',
+  },
 });
 
 const TaskCalendar = () => {
     const [selectedDate, setSelectedDate] = useState('')
     const [tasks, setTasks] = useState({})
     const [visible, setVisible] = useState(false)
-    const [taskTitle, setTaskTitle] = useState('');
+    const [taskTitle, setTaskTitle] = useState('')
     const [taskDescription, setTaskDescription] = useState('');
 
     const addTask = () => {
@@ -71,6 +88,7 @@ const TaskCalendar = () => {
             id: selectedDate, 
             title: taskTitle,
             description: taskDescription,
+            completed: false,
           },
         ],
       }
@@ -80,6 +98,7 @@ const TaskCalendar = () => {
       hideModal()
       console.log(tasks)
     }
+
     const today = new Date()
     const startDate = getFormatedDate(today.setDate(today.getDate()), 'YYYY/MM/DD')
 
@@ -135,8 +154,21 @@ const TaskCalendar = () => {
         {tasks[selectedDate] ? (
           tasks[selectedDate].map((task, index) => (
             <View key={index} style={styles.taskContainer}>
-              <Text> {task.title} </Text>
-              <Text> {task.description} </Text>
+              <View style ={{ flex: 1}}>
+                <Text style={styles.taskInput}> {task.title} </Text>
+                <Text> {task.description} </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    const newTasks = {...tasks};
+                    newTasks[selectedDate][index].completed = !newTasks[selectedDate][index].completed;
+                    setTasks(newTasks);
+                  }}
+                  style={[
+                    styles.circleButton,
+                    task.completed && styles.circleButtonPressed 
+                  ]}>
+                </TouchableOpacity>
             </View>
           ))
         ) : (
