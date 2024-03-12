@@ -106,8 +106,7 @@ const TaskCalendar = () => {
     const hideModal = () => setVisible(false)
 
     return (
-      <View>
-        <ScrollView>
+      <View style={{flex: 1}}>
         <DatePicker
           options={{
             backgroundColor: '#FFFFFF',
@@ -125,6 +124,33 @@ const TaskCalendar = () => {
           style={{ borderRadius: 10 }}
           onSelectedChange={(date) => setSelectedDate(date)}
         />
+        <ScrollView>
+          <View>
+          {tasks[selectedDate] ? (
+            tasks[selectedDate].map((task, index) => (
+              <View key={index} style={styles.taskContainer}>
+                <View style ={{ flex: 1}}>
+                  <Text style={styles.taskInput}> {task.title} </Text>
+                  <Text> {task.description} </Text>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => {
+                      const newTasks = {...tasks};
+                      newTasks[selectedDate][index].completed = !newTasks[selectedDate][index].completed;
+                      setTasks(newTasks);
+                    }}
+                    style={[
+                      styles.circleButton,
+                      task.completed && styles.circleButtonPressed 
+                    ]}>
+                  </TouchableOpacity>
+              </View>
+            ))
+          ) : (
+            <Text>No tasks for this date.</Text>
+          )}
+          </View>
+        </ScrollView>
         <Button title="Add Task" onPress={showModal} />
         <Modal
           visible={visible}
@@ -150,32 +176,6 @@ const TaskCalendar = () => {
           <Button title="Done" onPress={hideModal} 
         />
         </Modal>
-        <View>
-        {tasks[selectedDate] ? (
-          tasks[selectedDate].map((task, index) => (
-            <View key={index} style={styles.taskContainer}>
-              <View style ={{ flex: 1}}>
-                <Text style={styles.taskInput}> {task.title} </Text>
-                <Text> {task.description} </Text>
-                </View>
-                <TouchableOpacity
-                  onPress={() => {
-                    const newTasks = {...tasks};
-                    newTasks[selectedDate][index].completed = !newTasks[selectedDate][index].completed;
-                    setTasks(newTasks);
-                  }}
-                  style={[
-                    styles.circleButton,
-                    task.completed && styles.circleButtonPressed 
-                  ]}>
-                </TouchableOpacity>
-            </View>
-          ))
-        ) : (
-          <Text>No tasks for this date.</Text>
-        )}
-        </View>
-        </ScrollView>
       </View>
       );
   };
