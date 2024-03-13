@@ -34,17 +34,20 @@ const styles = StyleSheet.create({
   });
 
 const AnnouncementScreen = () => {
-    const [annoucements, setAnnouncements] = useState({})
+    const [announcements, setAnnouncements] = useState({})
     const [visibleAddAnnouncement, setVisibleAddAnnouncement] = useState(false)
     const [announcementDateTime, setAnnouncementDateTime] = useState('')
+    const [currentUser, setCurrentUser] = useState('')
+    const [announcementTitle, setAnnouncementTitle] = useState('')
+    const [announcementContent, setAnnouncementContent] = useState('')
 
-    const createAnnouncement = (announcementDateTime, user, title, content) => {
+    const addAnnouncement = (announcementDateTime, user, title, content) => {
         const newAnnouncements = {
           ...announcements,
           [announcementDateTime]: [
             ...(announcements[announcementDateTime] || []),
             {
-              id: Date.now(),
+              id: Date(),
               user: user,
               title: title,
               content: content,
@@ -64,8 +67,8 @@ const AnnouncementScreen = () => {
             <View>
 
             <Text>ANNOUNCEMENTS</Text>
-            {annoucements[announcementDateTime] &&
-                announcements[announcementDateTime].map((announcement, index) => {
+            {announcements[announcementDateTime] &&
+                announcements[announcementDateTime].map((announcement, index) => (
                     <View key={index} style={styles.announcementContainer}>
                         <View style = {{ flex: 1}}>
                             <Text> {announcement.user}</Text>
@@ -73,7 +76,7 @@ const AnnouncementScreen = () => {
                             <Text> {announcement.content}</Text>
                         </View>
                     </View>
-                    }
+                    )
                 )
             }
             </View>
@@ -84,6 +87,23 @@ const AnnouncementScreen = () => {
             visible={visibleAddAnnouncement}
             animationType='slide'
             >
+                <TextInput 
+                    placeholder= "User"
+                    value={currentUser}
+                    onChangeText={setCurrentUser}
+                />
+                <TextInput 
+                    placeholder= "Title"
+                    value={announcementTitle}
+                    onChangeText={setAnnouncementTitle}
+                />
+                <TextInput 
+                    placeholder= "Content"
+                    value={announcementContent}
+                    onChangeText={setAnnouncementContent}
+                />
+                <Button title="Submit" onPress={() => addAnnouncement(announcementDateTime, currentUser, announcementTitle, announcementContent)} />
+
                 <Button title="Done" onPress={hideAddAnnouncementModal}/>
             
             </Modal>
