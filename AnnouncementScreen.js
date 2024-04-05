@@ -1,37 +1,12 @@
 import { StyleSheet, Text, View, Button, Modal, TextInput, ScrollView, TouchableOpacity, Image } from 'react-native'
 import React, { useState } from 'react'
+import styles from './AnnouncementScreenStyles'
 
 export default function AnncouncementScreen({ navigation }) {
     return (
         <AnnouncementScreen/>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    announcementContainer: {
-        flexDirection: 'row',
-        backgroundColor: '#fff', 
-        borderRadius: 10, 
-        padding: 10, 
-        marginVertical: 5, 
-        alignItems: 'center', 
-        justifyContent: 'space-between',
-        shadowColor: "#000", 
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5, 
-      },
-  });
 
 const AnnouncementScreen = () => {
     const [announcements, setAnnouncements] = useState({})
@@ -41,20 +16,28 @@ const AnnouncementScreen = () => {
     const [announcementTitle, setAnnouncementTitle] = useState('')
     const [announcementContent, setAnnouncementContent] = useState('')
 
-    const addAnnouncement = (announcementDateTime, user, title, content) => {
+    const addAnnouncement = (user, title, content) => {
+
+        const submissionDateTime = new Date().toISOString();
+        const submissionDate = submissionDateTime.split('T')[0];
+
+        setAnnouncementDateTime(submissionDateTime);
+
+        const newAnnouncement = {
+            id: submissionDateTime,
+            user: user,
+            title: title,
+            content: content,
+            createdAt: submissionDateTime,
+        };
+
         const newAnnouncements = {
           ...announcements,
-          [announcementDateTime]: [
-            ...(announcements[announcementDateTime] || []),
-            {
-              id: Date(),
-              user: user,
-              title: title,
-              content: content,
-            },
-          ],
-        };
+          [submissionDate]: [...(announcements[submissionDate] || []), newAnnouncement],
+        }
+
         setAnnouncements(newAnnouncements);
+        hideAddAnnouncementModal()
       };
 
     const showAddAnnouncementModal = () => setVisibleAddAnnouncement(true)
@@ -63,51 +46,64 @@ const AnnouncementScreen = () => {
 
     return (
     
-        <View>
-            <View>
+        <View style={styles.container}>
 
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <Text>ANNOUNCEMENTS</Text>
-            {announcements[announcementDateTime] &&
-                announcements[announcementDateTime].map((announcement, index) => (
+            {Object.keys(announcements).sort().map((date, index, sortedDates) => {
+              const currentDate = new Date(date);
+              const previousDate = index > 0 ? new Date(sortedDates[index - 1]) : null;
+              const dayOfWeek = currentDate.toLocaleDateString('en-US', { weekday: 'long' });
+              const previousDayOfWeek = previousDate ? previousDate.toLocaleDateString('en-US', { weekday: 'long' }) : '';
+              
+              return (
+                <View key={date}>
+                  {dayOfWeek !== previousDayOfWeek && <Text style={styles.dateHeader}>{dayOfWeek}</Text>}
+                  {announcements[date].map((announcement, index) => (
                     <View key={index} style={styles.announcementContainer}>
-                        <View style = {{ flex: 1}}>
-                            <Text> {announcement.user}</Text>
-                            <Text> {announcement.title}</Text>
-                            <Text> {announcement.content}</Text>
-                        </View>
+                      <Text>{announcement.user}</Text>
+                      <Text style={styles.taskInput}>{announcement.title}</Text>
+                      <Text>{announcement.content}</Text>
+                      <Text>Created at: {new Date(announcement.createdAt).toLocaleTimeString()}</Text>
                     </View>
-                    )
-                )
-            }
-            </View>
-            <Button title="Add Announcement" onPress={showAddAnnouncementModal}/>
+                  ))}
+                </View>
+              );
+            })}
+        </ScrollView>
 
 
             <Modal
             visible={visibleAddAnnouncement}
             animationType='slide'
             >
-                <TextInput 
-                    placeholder= "User"
-                    value={currentUser}
-                    onChangeText={setCurrentUser}
-                />
-                <TextInput 
-                    placeholder= "Title"
-                    value={announcementTitle}
-                    onChangeText={setAnnouncementTitle}
-                />
-                <TextInput 
-                    placeholder= "Content"
-                    value={announcementContent}
-                    onChangeText={setAnnouncementContent}
-                />
-                <Button title="Submit" onPress={() => addAnnouncement(announcementDateTime, currentUser, announcementTitle, announcementContent)} />
-
-                <Button title="Done" onPress={hideAddAnnouncementModal}/>
-            
+            <View style={styles.container}>
+                <View style={styles.userTitle}>
+                    <TextInput 
+                        placeholder= "User"
+                        value={currentUser}
+                        onChangeText={setCurrentUser}
+                    />
+                </View>
+                <View style={styles.userTitle}>
+                    <TextInput 
+                        placeholder= "Title"
+                        value={announcementTitle}
+                        onChangeText={setAnnouncementTitle}
+                    />
+                </View>
+                <View style={styles.content}>
+                    <TextInput 
+                        placeholder= "Content"
+                        value={announcementContent}
+                        onChangeText={setAnnouncementContent}
+                    />
+                </View>
+                <Button title="Submit" onPress={() => addAnnouncement(currentUser, announcementTitle, announcementContent)} color="#F4722B"/>
+            </View>
+                <Button title="Done" onPress={hideAddAnnouncementModal} color="#F4722B"/>
             </Modal>
-
+            <Button title="Add Announcement" onPress={showAddAnnouncementModal} color="#F4722B"/>
         </View>
     )
 

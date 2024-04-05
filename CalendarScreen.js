@@ -119,12 +119,11 @@ const TaskCalendar = () => {
           }
         </View>
         </ScrollView>
-        <Button title="Add Task" onPress={showAddTaskModal} />
+        <Button title="Add Task" onPress={showAddTaskModal} color="#F4722B"/>
         <Modal
           visible={visibleAddTask}
           animationType="slide">
             <View style= {styles.container}>
-              <Text> {selectedDate}</Text>
                 <View style= {styles.task}>
                   <TextInput 
                     placeholder = "Task"
@@ -139,10 +138,9 @@ const TaskCalendar = () => {
                     onChangeText={setTaskDescription}
                   />
                 </View>
-                <Button title="Submit" onPress={addTask}/>
+                <Button title="Submit" onPress={addTask} color="#F4722B"/>
             </View>
-          <Button title="Done" onPress={hideAddTaskModal} 
-        />
+          <Button title="Done" onPress={hideAddTaskModal} color="#F4722B"/>
         </Modal>
 
         <Modal
@@ -162,12 +160,13 @@ const TaskCalendar = () => {
               onChangeText={text => setEditDescription(text)}
             />
             </View>
-            <Button title="Submit Edit" onPress={updateTask}/>
+            <Button title="Submit Edit" onPress={updateTask} color="#F4722B"/>
           </View>
-          <Button title="Back" onPress={hideEditTaskModal}/>
+          <Button title="Back" onPress={hideEditTaskModal} color="#F4722B"/>
         </Modal>
         
 
       </View>
       )
   }
+ 
